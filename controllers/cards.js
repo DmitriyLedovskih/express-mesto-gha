@@ -54,6 +54,7 @@ const likeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND_ERROR_STATUS).send({ message: 'Карточка не найдена' });
+        return;
       }
       res.send(card);
     })
@@ -75,6 +76,7 @@ const dislikeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         res.status(NOT_FOUND_ERROR_STATUS).send({ message: 'Карточка не найдена' });
+        return;
       }
       res.send(card);
     })
