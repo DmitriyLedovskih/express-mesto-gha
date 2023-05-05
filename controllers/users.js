@@ -10,18 +10,18 @@ const ConflictError = require('../errors/ConflictError');
 
 const getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((user) => res.send({ data: user }))
     .catch(next);
 };
 
 const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then((users) => {
-      if (!users) {
+    .then((user) => {
+      if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
-      res.send({ data: users });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -66,11 +66,11 @@ const createUser = (req, res, next) => {
 const updateProfile = (req, res, next) => {
   const updateData = req.body;
   User.findByIdAndUpdate(req.user._id, updateData, { new: true, runValidators: true })
-    .then((users) => {
-      if (!users) {
+    .then((user) => {
+      if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
-      res.send({ data: users });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -86,11 +86,11 @@ const updateProfile = (req, res, next) => {
 const updateProfileAvatar = (req, res, next) => {
   const updateData = req.body;
   User.findByIdAndUpdate(req.user._id, updateData, { new: true, runValidators: true })
-    .then((users) => {
-      if (!users) {
+    .then((user) => {
+      if (!user) {
         throw new NotFoundError('Пользователь не найден');
       }
-      res.send({ data: users });
+      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -107,13 +107,12 @@ const login = (req, res, next) => {
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, 'some-key', { expiresIn: '1s' });
-      res.cookie('token', token, {
-        maxAge: 1,
-        httpOnly: true,
-      });
+      const token = jwt.sign({ _id: user._id }, 'some-key', { expiresIn: '7d' });
 
-      res.send({ token });
+      res.cookie('token', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+      }).send({ token });
     })
     .catch(next);
 };
