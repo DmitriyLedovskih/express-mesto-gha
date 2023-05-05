@@ -5,9 +5,12 @@ const {
   getUser,
   updateProfile,
   updateProfileAvatar,
+  getMe,
 } = require('../controllers/users');
 
 router.get('/users', getUsers);
+
+router.get('/users/me', getMe);
 
 router.get('/users/:userId', celebrate({
   params: Joi.object().keys({

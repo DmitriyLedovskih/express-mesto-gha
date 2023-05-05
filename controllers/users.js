@@ -32,6 +32,12 @@ const getUser = (req, res, next) => {
     });
 };
 
+const getMe = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
 const createUser = (req, res, next) => {
   const {
     name,
@@ -112,6 +118,7 @@ const login = (req, res, next) => {
       res.cookie('token', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
+        sameSite: true,
       }).send({ token });
     })
     .catch(next);
@@ -120,6 +127,7 @@ const login = (req, res, next) => {
 module.exports = {
   getUsers,
   getUser,
+  getMe,
   createUser,
   updateProfile,
   updateProfileAvatar,
