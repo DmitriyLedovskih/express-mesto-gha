@@ -1,3 +1,4 @@
+const OK_STATUS = 200;
 const CREATE_STATUS = 201;
 const BAD_REQUEST_ERROR_STATUS = 400;
 const UNAUTHORIZED_ERROR_STATUS = 401;
@@ -5,8 +6,10 @@ const FORBIDDEN_ERROR_STATUS = 403;
 const NOT_FOUND_ERROR_STATUS = 404;
 const CONFLICT_ERROR_STATUS = 409;
 const INTERNAL_SERVER_ERROR_STATUS = 500;
+const regex = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/;
 
 module.exports = {
+  OK_STATUS,
   CREATE_STATUS,
   BAD_REQUEST_ERROR_STATUS,
   FORBIDDEN_ERROR_STATUS,
@@ -14,4 +17,5 @@ module.exports = {
   UNAUTHORIZED_ERROR_STATUS,
   CONFLICT_ERROR_STATUS,
   INTERNAL_SERVER_ERROR_STATUS,
+  regex,
 };
