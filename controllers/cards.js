@@ -44,17 +44,18 @@ const deleteCard = (req, res, next) => {
 };
 
 const likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } },
-    { new: true },
-  )
-    .then((card) => card.populate(['owner', 'likes']))
+  Card.findById(req.user._id)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найден');
       }
-      res.send(card);
+      Card.findByIdAndUpdate(
+        req.params.cardId,
+        { $addToSet: { likes: req.user._id } },
+        { new: true },
+      )
+        .then((cardLike) => cardLike.populate(['owner', 'likes']))
+        .then((cardLike) => res.send(cardLike));
     })
     .catch(next);
 };
