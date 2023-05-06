@@ -44,11 +44,12 @@ const deleteCard = (req, res, next) => {
 };
 
 const likeCard = (req, res, next) => {
-  Card.findById(req.user._id)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найден');
       }
+
       Card.findByIdAndUpdate(
         req.params.cardId,
         { $addToSet: { likes: req.user._id } },
