@@ -4,7 +4,7 @@ const NotFoundError = require('../errors/NotFoundError');
 const userRouter = require('./users');
 const cardRouter = require('./cards');
 const { regex } = require('../utils/constants');
-const { createUser, login } = require('../controllers/users');
+const { createUser, login, signOut } = require('../controllers/users');
 const auth = require('../middlewares/auth');
 
 router.post('/signup', celebrate({
@@ -24,10 +24,10 @@ router.post('/signin', celebrate({
   }),
 }), login);
 
-router.use(auth);
+router.get('/signout', signOut);
 
-router.use('/users', userRouter);
-router.use('/cards', cardRouter);
+router.use('/users', auth, userRouter);
+router.use('/cards', auth, cardRouter);
 router.use('*', (req, res, next) => {
   next(new NotFoundError('URL не найден'));
 });

@@ -101,6 +101,10 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
+const signOut = (req, res) => {
+  res.clearCookie('token');
+};
+
 module.exports = {
   getUsers,
   getUser,
@@ -109,4 +113,5 @@ module.exports = {
   updateProfile,
   updateProfileAvatar,
   login,
+  signOut,
 };
