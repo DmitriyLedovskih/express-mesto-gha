@@ -102,7 +102,7 @@ const login = (req, res, next) => {
 };
 
 const signOut = (req, res) => {
-  res.clearCookie('token');
+  res.clearCookie('token').send({ message: 'Вы вышли из системы' });
 };
 
 module.exports = {
