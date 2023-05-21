@@ -7,7 +7,7 @@ module.exports = (req, res, next) => {
   const { token } = req.cookies;
 
   if (!token) {
-    next(new UnauthorizedError('Вы не авторизованы'));
+    throw new UnauthorizedError('Вы не авторизованы');
   }
 
   let payload;

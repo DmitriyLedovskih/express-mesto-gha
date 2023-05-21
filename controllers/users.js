@@ -11,6 +11,18 @@ const sendUser = require('../utils/sendUser');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
+const updateData = (req, res, next) => {
+  User.findByIdAndUpdate(req.user._id, req.body, { new: true, runValidators: true })
+    .then((user) => sendUser(res, user))
+    .catch((err) => {
+      if (err instanceof ValidationError) {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
+};
+
 const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
@@ -57,34 +69,13 @@ const createUser = (req, res, next) => {
             next(err);
           }
         });
-    });
+    })
+    .catch(next);
 };
 
-const updateProfile = (req, res, next) => {
-  const updateData = req.body;
-  User.findByIdAndUpdate(req.user._id, updateData, { new: true, runValidators: true })
-    .then((user) => sendUser(res, user))
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
-};
+const updateProfile = (req, res, next) => updateData(req, res, next);
 
-const updateProfileAvatar = (req, res, next) => {
-  const updateData = req.body;
-  User.findByIdAndUpdate(req.user._id, updateData, { new: true, runValidators: true })
-    .then((user) => sendUser(res, user))
-    .catch((err) => {
-      if (err instanceof ValidationError) {
-        next(new BadRequestError('Переданы некорректные данные'));
-      } else {
-        next(err);
-      }
-    });
-};
+const updateProfileAvatar = (req, res, next) => updateData(req, res, next);
 
 const login = (req, res, next) => {
   const { email, password } = req.body;

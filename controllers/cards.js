@@ -9,6 +9,7 @@ const {
 
 const getCards = (req, res, next) => {
   Card.find({})
+    .sort({ createdAt: -1 })
     .populate(['owner', 'likes'])
     .then((cards) => res.send({ data: cards }))
     .catch(next);
@@ -32,31 +33,30 @@ const deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw new NotFoundError('Карточка не найден');
+        throw new NotFoundError('Карточка не найдена');
       } else if (req.user._id === card.owner.toString()) {
-        Card.findByIdAndRemove(req.params.cardId)
+        return Card.findByIdAndRemove(req.params.cardId)
           .then(() => res.send({ message: 'Карточка удалена' }));
       } else {
-        next(new ForbiddenError('Нельзя удалять не ваши карточки'));
+        return next(new ForbiddenError('Нельзя удалять не ваши карточки'));
       }
     })
     .catch(next);
 };
 
 const likeCard = (req, res, next) => {
-  Card.findById(req.params.cardId)
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
+    .populate(['owner', 'likes'])
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найден');
       }
 
-      Card.findByIdAndUpdate(
-        req.params.cardId,
-        { $addToSet: { likes: req.user._id } },
-        { new: true },
-      )
-        .then((cardLike) => cardLike.populate(['owner', 'likes']))
-        .then((cardLike) => res.send(cardLike));
+      res.send(card);
     })
     .catch(next);
 };
